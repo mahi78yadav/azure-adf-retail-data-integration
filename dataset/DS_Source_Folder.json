@@ -1,0 +1,65 @@
+{
+	"name": "DS_Source_Folder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Retail",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pFileSystem": {
+				"type": "string",
+				"defaultValue": "raw"
+			},
+			"pFolderPath": {
+				"type": "string",
+				"defaultValue": "customers"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().pFolderPath",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().pFileSystem",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "customer_id",
+				"type": "String"
+			},
+			{
+				"name": "customer_name",
+				"type": "String"
+			},
+			{
+				"name": "city",
+				"type": "String"
+			},
+			{
+				"name": "state",
+				"type": "String"
+			},
+			{
+				"name": "customer_segment",
+				"type": "String"
+			},
+			{
+				"name": "registration_date",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
