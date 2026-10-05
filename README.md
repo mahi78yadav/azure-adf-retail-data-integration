@@ -347,11 +347,11 @@ azure-adf-retail-data-integration/
 
 ### Phase 1 — Azure Setup
 
-- [ ] Create Resource Group
-- [ ] Create ADLS Gen2 Storage Account
-- [ ] Create containers
-- [ ] Upload sample data
-- [ ] Create Azure Data Factory
+- [rg-retail-data-dev] Create Resource Group -- Completed.
+- [stretaildata202610] Create ADLS Gen2 Storage Account  -- Completed.
+- [raw, Processed, archive, config] Containers created  -- Completed.
+- [uploaded the data ] Upload sample data  -- Completed.
+- [In progress ] Create Azure Data Factory  -- In Progress
 
 ### Phase 2 — ADF Configuration
 
