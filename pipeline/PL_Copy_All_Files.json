@@ -51,7 +51,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"quoteAllText": true,
-							"fileExtension": ".invalid"
+							"fileExtension": ".txt"
 						}
 					},
 					"enableStaging": false,
