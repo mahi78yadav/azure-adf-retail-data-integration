@@ -51,7 +51,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"fileExtension": ".invalid"
 						}
 					},
 					"enableStaging": false,
@@ -155,7 +155,10 @@
 								{
 									"name": "EndWatermark",
 									"type": "Datetime",
-									"value": "@variables('EndWatermark')",
+									"value": {
+										"value": "@variables('EndWatermark')",
+										"type": "Expression"
+									},
 									"direction": "Input"
 								}
 							],
