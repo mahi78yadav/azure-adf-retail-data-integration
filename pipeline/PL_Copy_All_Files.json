@@ -35,6 +35,7 @@
 								"value": "@variables('EndWatermark')",
 								"type": "Expression"
 							},
+							"wildcardFolderPath": "invalid_test_folder",
 							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
 						},
