@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-retail-data-dev-1"
+		},
+		"LS_AzureSQL_Retail_password": {
+			"value": ""
+		},
+		"LS_ADLS_Retail_properties_typeProperties_url": {
+			"value": "https://stretaildata202610.dfs.core.windows.net/"
+		},
+		"LS_AzureSQL_Retail_properties_typeProperties_server": {
+			"value": "sql-retail-data-dev-2026.database.windows.net"
+		},
+		"LS_AzureSQL_Retail_properties_typeProperties_database": {
+			"value": "sqldb-retail-dev"
+		},
+		"LS_AzureSQL_Retail_properties_typeProperties_userName": {
+			"value": "mahender"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
