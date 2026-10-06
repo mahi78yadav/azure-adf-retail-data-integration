@@ -15,7 +15,7 @@
 				],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 0,
+					"retry": 2,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -161,6 +161,68 @@
 							],
 							"type": "NonQuery",
 							"text": "UPDATE dbo.ETL_Watermark\nSET\n    LastWatermark = @EndWatermark,\n    UpdatedDate = SYSUTCDATETIME()\nWHERE PipelineName = 'PL_Copy_All_Files'; "
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Log_Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Copy_Raw_To_Processed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Retail",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "PipelineName",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "ActivityName",
+									"type": "String",
+									"value": {
+										"value": "Copy_Raw_To_Processed",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "ErrorMessage",
+									"type": "String",
+									"value": {
+										"value": "@activity('Copy_Raw_To_Processed').error.message",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								}
+							],
+							"type": "NonQuery",
+							"text": "INSERT INTO dbo.ETL_ErrorLog\n(\n    PipelineName,\n    ActivityName,\n    ErrorMessage\n)\nVALUES\n(\n    @PipelineName,\n    @ActivityName,\n    @ErrorMessage\n);"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
