@@ -5,7 +5,14 @@
 			{
 				"name": "Copy_Raw_To_Processed",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get_Watermark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -20,6 +27,14 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@activity('Get_Watermark').output.firstRow.LastWatermark",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@variables('EndWatermark')",
+								"type": "Expression"
+							},
 							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
 						},
@@ -61,8 +76,102 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Get_Watermark",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Set_End_Watermark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_Watermark",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set_End_Watermark",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "EndWatermark",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Update_Watermark",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Copy_Raw_To_Processed",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Retail",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "EndWatermark",
+									"type": "Datetime",
+									"value": "@variables('EndWatermark')",
+									"direction": "Input"
+								}
+							],
+							"type": "NonQuery",
+							"text": "UPDATE dbo.ETL_Watermark\nSET\n    LastWatermark = @EndWatermark,\n    UpdatedDate = SYSUTCDATETIME()\nWHERE PipelineName = 'PL_Copy_All_Files'; "
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
+		"variables": {
+			"EndWatermark": {
+				"type": "String"
+			}
+		},
 		"annotations": [],
 		"lastPublishTime": "2026-10-05T15:24:32Z"
 	},
